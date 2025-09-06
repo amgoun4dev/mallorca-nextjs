@@ -73,7 +73,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
           
           {searchQuery && (
             <div id="search-results" className="mt-4 text-sm text-muted-foreground" role="status" aria-live="polite">
-              Suchergebnisse für "{searchQuery}" werden hier angezeigt...
+              Suchergebnisse für &quot;{searchQuery}&quot; werden hier angezeigt...
             </div>
           )}
           
