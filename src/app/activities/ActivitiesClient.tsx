@@ -104,17 +104,33 @@ export default function ActivitiesClient() {
   };
 
   const getActivityImage = (activity: Activity) => {
+    // Prioritize featured_image when available, as these often load faster
+    if (activity.featured_image) {
+      return activity.featured_image;
+    }
+
+    // Fallback to optimized Gallery images with better selection
     if (activity.gallery && Array.isArray(activity.gallery) && activity.gallery.length > 0) {
       const gallery = activity.gallery[0];
-      if (gallery?.variants) {
-        const variant720 = gallery.variants.find((v: any) => v.width === 720 && v.height === 480);
-        if (variant720) return variant720.url;
-        const variant540 = gallery.variants.find((v: any) => v.width === 540);
-        if (variant540) return variant540.url;
-        return gallery.variants[gallery.variants.length - 1]?.url;
+      if (gallery?.variants && Array.isArray(gallery.variants)) {
+        // Search for medium resolutions for better performance
+        const variant480 = gallery.variants.find((v: any) => v.width === 480 && v.height === 320);
+        if (variant480) return variant480.url;
+        
+        const variant360 = gallery.variants.find((v: any) => v.width === 360 && v.height === 240);
+        if (variant360) return variant360.url;
+        
+        const variant240 = gallery.variants.find((v: any) => v.width === 240 && v.height === 160);
+        if (variant240) return variant240.url;
+        
+        // As last resort the smallest available variant
+        const smallestVariant = gallery.variants.find((v: any) => v.width <= 400);
+        if (smallestVariant) return smallestVariant.url;
       }
     }
-    return activity.featured_image || 'https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg';
+    
+    // Reliable fallback
+    return "https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg";
   };
 
   const getDuration = (activity: Activity) => {
