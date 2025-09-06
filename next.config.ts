@@ -23,13 +23,12 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    quality: 85,
     unoptimized: false,
   },
 
   // Turbopack configuration
   turbopack: {
-    root: '../',
+    root: process.cwd(),
   },
 
   // Experimental features for better performance
@@ -40,10 +39,6 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-slot',
       'lucide-react',
     ],
-    // Enable optimized CSS loading
-    optimizeCss: true,
-    // Enable server components external packages
-    serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
 
   // Turbopack optimizations (replaces webpack)

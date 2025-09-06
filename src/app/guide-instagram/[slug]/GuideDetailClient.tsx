@@ -27,6 +27,16 @@ interface Guide {
   author: string;
 }
 
+interface RelatedGuide {
+  id: string;
+  title_de: string;
+  title_en: string;
+  slug_de: string;
+  thumbnail: string;
+  location: string;
+  reading_time: number;
+}
+
 interface GuideDetailClientProps {
   slug: string;
 }
@@ -35,7 +45,7 @@ const GuideDetailClient = ({ slug }: GuideDetailClientProps) => {
   const [guide, setGuide] = useState<Guide | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [relatedGuides, setRelatedGuides] = useState<Guide[]>([]);
+  const [relatedGuides, setRelatedGuides] = useState<RelatedGuide[]>([]);
   const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
