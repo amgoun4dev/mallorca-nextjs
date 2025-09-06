@@ -34,3 +34,28 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Mallorca Magic Next.js
+
+## Environment
+
+Set the public site URL for canonical/OG metadata and sitemap:
+
+```
+NEXT_PUBLIC_SITE_URL=https://www.mallorcamagic.de
+```
+
+On Vercel, add this to Project Settings → Environment Variables.
+
+## Deploy
+
+- Install deps: `npm i`
+- Dev: `npm run dev`
+- Build: `npm run build`
+- Start: `npm start`
+
+## Notes
+- robots.txt: `src/app/robots.ts`
+- sitemap.xml: `src/app/sitemap.ts`
+- External images allowed in `next.config.ts`.
+# mallorca-nextjs
