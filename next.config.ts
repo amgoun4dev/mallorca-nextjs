@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'olrieidgokcnhhymksnf.supabase.co' },
+      { protocol: 'https', hostname: 'media-cdn.tripadvisor.com' },
+      { protocol: 'https', hostname: 'dynamic-media-cdn.tripadvisor.com' },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year
