@@ -162,7 +162,7 @@ const GuideDetailClient = ({ slug }: GuideDetailClientProps) => {
               <Badge variant="secondary" className="mb-2">
                 {guide.location}
               </Badge>
-              <h1 className="font-display text-3xl md:text-5xl font-bold mb-4">
+              <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
                 {guide.title_de || guide.title_en}
               </h1>
               
@@ -256,8 +256,24 @@ const GuideDetailClient = ({ slug }: GuideDetailClientProps) => {
                   <CardContent className="p-8">
                     {/* Description */}
                     {(guide.long_desc_de || guide.long_desc_en || guide.short_desc_de) && (
-                      <div className="prose prose-lg max-w-none mb-8">
+                      <div className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-foreground mb-8">
                         <div 
+                          className="guide-content 
+                            [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-6 [&_h1]:text-foreground [&_h1]:font-display
+                            [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-foreground [&_h2]:font-display
+                            [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-foreground [&_h3]:font-display
+                            [&_h4]:text-lg [&_h4]:font-semibold [&_h4]:mt-4 [&_h4]:mb-2 [&_h4]:text-foreground [&_h4]:font-display
+                            [&_h5]:text-base [&_h5]:font-semibold [&_h5]:mt-4 [&_h5]:mb-2 [&_h5]:text-foreground [&_h5]:font-display
+                            [&_h6]:text-sm [&_h6]:font-semibold [&_h6]:mt-3 [&_h6]:mb-2 [&_h6]:text-foreground [&_h6]:font-display
+                            [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:text-muted-foreground
+                            [&_strong]:font-semibold [&_strong]:text-foreground
+                            [&_em]:italic
+                            [&_ul]:mb-4 [&_ul]:ml-6 [&_ul]:list-disc
+                            [&_ol]:mb-4 [&_ol]:ml-6 [&_ol]:list-decimal
+                            [&_li]:mb-1
+                            [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:italic
+                            [&_a]:text-primary [&_a]:underline [&_a]:hover:text-primary-dark
+                          "
                           dangerouslySetInnerHTML={{ 
                             __html: guide.long_desc_de || guide.long_desc_en || guide.short_desc_de 
                           }} 
