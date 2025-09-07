@@ -322,7 +322,7 @@ export default function HotelDetailClient({ hotel: initialHotel }: HotelDetailCl
             initialHotel.short_facilities_9,
             initialHotel.short_facilities_10,
             initialHotel.short_facilities_11
-          ].filter(facility => facility)}
+          ].filter((facility): facility is string => Boolean(facility))}
           language={language}
         />
 
