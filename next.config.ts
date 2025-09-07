@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'olrieidgokcnhhymksnf.supabase.co' },
       { protocol: 'https', hostname: 'media-cdn.tripadvisor.com' },
       { protocol: 'https', hostname: 'dynamic-media-cdn.tripadvisor.com' },
-     
+      { protocol: 'https', hostname: 'i.pinimg.com' },
       // Activity image domains
       { protocol: 'https', hostname: 'cdn.getyourguide.com' },
       { protocol: 'https', hostname: 'img.getyourguide.com' },
