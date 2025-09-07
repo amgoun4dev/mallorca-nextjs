@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, MapPin, Star, Clock, Users, CheckCircle, ExternalLink, Heart, Bed, Bath } from "lucide-react";
@@ -211,8 +212,52 @@ export default function ActivityDetailClient({ slug }: ActivityDetailClientProps
     );
   }
 
+  const getStructuredData = (activity: Activity) => {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.mallorcamagic.de';
+    return {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      "name": getTitle(activity),
+      "description": getDescription(activity),
+      "url": `${baseUrl}/activities/${activity.slug}`,
+      "image": getHeroImage(activity),
+      "address": activity.location ? {
+        "@type": "PostalAddress",
+        "addressLocality": activity.location,
+        "addressCountry": "ES"
+      } : undefined,
+      "aggregateRating": activity.rating ? {
+        "@type": "AggregateRating",
+        "ratingValue": activity.rating,
+        "reviewCount": activity.review_count || 0,
+        "bestRating": 5,
+        "worstRating": 1
+      } : undefined,
+      "offers": activity.price_from ? {
+        "@type": "Offer",
+        "price": activity.price_from,
+        "priceCurrency": activity.currency || "EUR",
+        "availability": "https://schema.org/InStock"
+      } : undefined,
+      "provider": {
+        "@type": "Organization",
+        "name": "Mallorca Magic",
+        "url": baseUrl
+      }
+    };
+  };
+
   return (
     <div className="min-h-screen">
+      <Head>
+        <script 
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(getStructuredData(activity))
+          }}
+        />
+      </Head>
+      
       {/* ActivityHero */}
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         {/* Background Image */}
