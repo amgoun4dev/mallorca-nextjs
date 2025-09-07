@@ -72,6 +72,7 @@ export function HotelGallery({ photos, photosByRoomType, gallery }: HotelGallery
                   fill
                   sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                   className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  unoptimized={photo.url.includes('hotellook.com') ? true : false}
                 />
                 {photo.caption && (
                   <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2 text-xs">

@@ -153,7 +153,7 @@ export default function HotelDetailClient({ hotel: initialHotel }: HotelDetailCl
       "@type": "Hotel",
       "name": getTitle(hotel),
       "description": hotel.description || `${getTitle(hotel)} - Hotel auf Mallorca`,
-      "url": `${window.location.origin}/hotels/${hotel.slug}`,
+      "url": `https://mallorca-magic-nextjs-6c7wx38t9-rachids-projects-8af1b847.vercel.app/hotels/${hotel.slug}`,
       "image": images.length > 1 ? images : hotel.photos_0_url,
       "photo": images.map(url => ({
         "@type": "ImageObject",

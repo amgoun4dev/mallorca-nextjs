@@ -18,6 +18,7 @@ export function HotelHero({ backgroundImage, overlayText }: HotelHeroProps) {
           className="object-cover object-center"
           priority
           sizes="100vw"
+          unoptimized={backgroundImage?.includes('hotellook.com') ? true : false}
         />
       </div>
       <div className="absolute inset-0 bg-black/40" />
