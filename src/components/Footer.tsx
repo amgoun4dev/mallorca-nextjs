@@ -15,6 +15,7 @@ const footerSections = [
   {
     title: "Unterkünfte",
     links: [
+      { name: "Hotels", href: "/hotels" },
       { name: "Ferienwohnungen", href: "/holiday-rentals" },
       { name: "Immobilien", href: "/real-estate" },
     ],

@@ -12,7 +12,7 @@ interface SearchResult {
   id: string
   title: string
   excerpt: string
-  type: 'guide' | 'activity' | 'news' | 'real_estate'
+  type: 'guide' | 'activity' | 'hotel' | 'news' | 'real_estate'
   slug: string
   image?: string
   category: string
@@ -56,6 +56,14 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
           .or(`title_en.ilike.%${searchTerm}%,title_de.ilike.%${searchTerm}%,description_en.ilike.%${searchTerm}%,description_de.ilike.%${searchTerm}%`)
           .limit(3)
 
+        // Search hotels
+        const { data: hotels } = await supabase
+          .from('hotels')
+          .select('id, name_en, name_de, description, slug, photos_0_url')
+          .eq('status', 'published')
+          .or(`name_en.ilike.%${searchTerm}%,name_de.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`)
+          .limit(3)
+
         // Search news
         const { data: news } = await supabase
           .from('articles')
@@ -82,6 +90,15 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
             slug: item.slug,
             image: item.featured_image,
             category: 'Aktivität'
+          })),
+          ...(hotels || []).map(item => ({
+            id: item.id,
+            title: item.name_de || item.name_en || '',
+            excerpt: item.description || '',
+            type: 'hotel' as const,
+            slug: item.slug,
+            image: item.photos_0_url,
+            category: 'Hotel'
           })),
           ...(news || []).map(item => ({
             id: item.id,
@@ -110,6 +127,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
     const paths = {
       guide: '/guide-instagram',
       activity: '/activities',
+      hotel: '/hotels',
       news: '/news',
       real_estate: '/real-estate'
     }
