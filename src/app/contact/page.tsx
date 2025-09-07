@@ -1,15 +1,26 @@
-export const metadata = {
-  title: "Kontakt | Mallorca Magic",
-  description: "Kontaktieren Sie das Mallorca Magic Team.",
+import { Metadata } from 'next';
+import ContactClient from './ContactClient';
+
+export const metadata: Metadata = {
+  title: 'Kontakt - Mallorca Magic | Persönliche Reiseberatung für Mallorca',
+  description: 'Kontaktieren Sie die Mallorca Magic Experten für persönliche Reiseberatung, maßgeschneiderte Empfehlungen und lokale Insider-Tipps für Ihren perfekten Mallorca-Urlaub.',
+  keywords: 'Kontakt, Mallorca Beratung, Reiseplanung, persönliche Empfehlungen, Mallorca Experten, Mallorca Magic',
+  openGraph: {
+    title: 'Kontakt - Mallorca Magic | Persönliche Reiseberatung für Mallorca',
+    description: 'Kontaktieren Sie die Mallorca Magic Experten für persönliche Reiseberatung, maßgeschneiderte Empfehlungen und lokale Insider-Tipps für Ihren perfekten Mallorca-Urlaub.',
+    type: 'website',
+    url: '/contact',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Kontakt - Mallorca Magic',
+    description: 'Kontaktieren Sie die Mallorca Magic Experten für persönliche Reiseberatung, maßgeschneiderte Empfehlungen und lokale Insider-Tipps für Ihren perfekten Mallorca-Urlaub.',
+  },
+  alternates: {
+    canonical: '/contact'
+  }
 };
 
 export default function ContactPage() {
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="font-display text-4xl md:text-5xl font-bold mb-6">Kontakt</h1>
-      <p className="text-muted-foreground max-w-3xl">
-        Schreiben Sie uns an <a className="text-primary underline" href="mailto:info@mallorcamagic.es">info@mallorcamagic.es</a>.
-      </p>
-    </div>
-  );
+  return <ContactClient />;
 }
