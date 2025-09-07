@@ -213,8 +213,9 @@ function getSEODescription(hotel: Hotel): string {
   return `Entdecken Sie ${getTitle(hotel)}${locationText}. ${starText}Hotel mit erstklassigen Einrichtungen und exzellentem Service.${priceText} Jetzt buchen!`;
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const hotel = await getHotel(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const hotel = await getHotel(slug);
   
   if (!hotel) {
     return {
@@ -247,8 +248,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function HotelDetailPage({ params }: { params: { slug: string } }) {
-  const hotel = await getHotel(params.slug);
+export default async function HotelDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const hotel = await getHotel(slug);
 
   if (!hotel) {
     notFound();
