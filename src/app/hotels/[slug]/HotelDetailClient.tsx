@@ -264,7 +264,7 @@ export default function HotelDetailClient({ hotel: initialHotel }: HotelDetailCl
             initialHotel.photos_21_url,
             initialHotel.photos_22_url,
             initialHotel.photos_23_url
-          ].filter(url => url).map(url => ({ url }))}
+          ].filter((url): url is string => Boolean(url)).map(url => ({ url }))}
           photosByRoomType={{}}
           gallery={[
             initialHotel.photos_0_url,
@@ -291,7 +291,7 @@ export default function HotelDetailClient({ hotel: initialHotel }: HotelDetailCl
             initialHotel.photos_21_url,
             initialHotel.photos_22_url,
             initialHotel.photos_23_url
-          ].filter(url => url).map(url => ({ url }))}
+          ].filter((url): url is string => Boolean(url)).map(url => ({ url }))}
         />
 
         {/* Ratings */}
