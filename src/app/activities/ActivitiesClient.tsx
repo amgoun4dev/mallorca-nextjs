@@ -52,6 +52,7 @@ export default function ActivitiesClient() {
   const [hasMore, setHasMore] = useState(true);
   const [displayCount, setDisplayCount] = useState(30);
   const [language] = useState<'en' | 'de' | 'es'>('de'); // Default to German
+  const [isClient, setIsClient] = useState(false);
   
   const ITEMS_PER_PAGE = 30;
 
@@ -59,6 +60,11 @@ export default function ActivitiesClient() {
   useEffect(() => {
     setDisplayCount(30);
   }, [searchTerm, sortBy]);
+
+  // Ensure client-side rendering for consistent image URLs
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     fetchActivities();
@@ -104,31 +110,56 @@ export default function ActivitiesClient() {
   };
 
   const getActivityImage = (activity: Activity) => {
-    // Skip external CDNs that timeout and prioritize reliable sources
-    if (activity.featured_image && !activity.featured_image.includes('tripadvisor.com')) {
-      return activity.featured_image;
+    // Only run on client to avoid hydration mismatch
+    if (!isClient) {
+      return 'https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg';
     }
-
-    // Use local images from public folder - rotate through available images
-    const localImages = [
-      '/lovable-uploads/0ccc1f16-0b14-46d6-b630-b89d5e72bb1d.png',
-      '/lovable-uploads/150b65d8-880f-4502-a2c7-1bac146d90d4.png',
-      '/lovable-uploads/2411e8eb-622b-4671-9c18-c96452b3b52e.png',
-      '/lovable-uploads/3ce02233-799c-4e4f-9ba8-7dc6ccfd6b1f.png',
-      '/lovable-uploads/4223ae41-b263-48cb-a4eb-c54e7d88de5e.png',
-      '/lovable-uploads/53815b7b-96b8-4822-b136-d8e35175cadf.png',
-      '/lovable-uploads/76bcf0aa-341c-44ab-9032-05aad263f26d.png',
-      '/lovable-uploads/7a47ca0f-17ad-4dde-b282-aecad01275de.png',
-      '/lovable-uploads/a0295954-4dd2-494e-ba3b-96cd603b1382.png',
-      '/lovable-uploads/aca4304b-cf00-4bd3-a16f-83243ea2bbb1.png',
-      '/lovable-uploads/ba360617-1620-43d6-b46a-c6e32347b7ef.png',
-      '/lovable-uploads/ca090410-369a-46e2-9f7b-3ef628908ecf.png',
-      '/lovable-uploads/fb0d43bc-97c3-47b9-8a33-1bd1ddb865af.png'
-    ];
     
-    // Use activity ID to consistently assign the same image to the same activity
-    const imageIndex = activity.id ? parseInt(activity.id.slice(-2), 36) % localImages.length : 0;
-    return localImages[imageIndex];
+    try {
+      let imageUrl = '';
+      
+      // First priority: Check gallery for optimized variants (matching original Lovable logic)
+      if (activity.gallery && Array.isArray(activity.gallery) && activity.gallery.length > 0) {
+        const gallery = activity.gallery[0];
+        if (gallery?.variants && Array.isArray(gallery.variants)) {
+          // Look for 720x480 variant first (optimal size)
+          const variant720 = gallery.variants.find((v: any) => v && v.width === 720 && v.height === 480 && v.url);
+          if (variant720?.url) {
+            imageUrl = variant720.url;
+          } else {
+            // Fallback to 540px width variant
+            const variant540 = gallery.variants.find((v: any) => v && v.width === 540 && v.url);
+            if (variant540?.url) {
+              imageUrl = variant540.url;
+            } else {
+              // Use the last variant as final fallback
+              const lastVariant = gallery.variants[gallery.variants.length - 1];
+              if (lastVariant?.url) {
+                imageUrl = lastVariant.url;
+              }
+            }
+          }
+        }
+      }
+      
+      // Second priority: Use featured_image (including TripAdvisor CDN)
+      if (!imageUrl && activity.featured_image && typeof activity.featured_image === 'string') {
+        imageUrl = activity.featured_image;
+      }
+      
+      // Final fallback: Supabase storage fallback image
+      if (!imageUrl) {
+        imageUrl = 'https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg';
+      }
+      
+      // Add cache busting parameter to prevent caching issues
+      const separator = imageUrl.includes('?') ? '&' : '?';
+      return `${imageUrl}${separator}t=${Date.now()}`;
+      
+    } catch (error) {
+      console.error('Error in getActivityImage for activity:', activity.id, error);
+      return `https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg?t=${Date.now()}`;
+    }
   };
 
   const getDuration = (activity: Activity) => {
@@ -270,13 +301,16 @@ export default function ActivitiesClient() {
                 <Link key={activity.id} href={`/activities/${activity.slug}`}>
                   <Card className="group overflow-hidden shadow-medium hover:shadow-large transition-all duration-300 cursor-pointer">
                     <div className="relative aspect-video overflow-hidden">
-                      <Image 
-                        src={getActivityImage(activity)} 
-                        alt={getTitle(activity)}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
+                    <Image 
+                      src={getActivityImage(activity)} 
+                      alt={getTitle(activity)}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      priority={true}
+                      unoptimized={true}
+                      key={activity.id}
+                    />
                       <div className="absolute top-4 left-4">
                         <Badge className="bg-accent text-accent-foreground font-medium">
                           Empfohlen
@@ -372,6 +406,9 @@ export default function ActivitiesClient() {
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      priority={index < 6}
+                      unoptimized={true}
+                      key={activity.id}
                     />
                     {activity.is_featured && (
                       <div className="absolute top-3 left-3">

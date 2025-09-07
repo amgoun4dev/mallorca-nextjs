@@ -59,7 +59,12 @@ export default function ActivityDetailClient({ slug }: ActivityDetailClientProps
   const [loading, setLoading] = useState(true);
   const [relatedActivities, setRelatedActivities] = useState<Activity[]>([]);
   const [language] = useState<'en' | 'de' | 'es'>('de');
+  const [isClient, setIsClient] = useState(false);
   
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   useEffect(() => {
     const fetchActivity = async () => {
       if (!slug) return;
@@ -111,31 +116,41 @@ export default function ActivityDetailClient({ slug }: ActivityDetailClientProps
   };
 
   const getActivityImage = (activity: Activity): string => {
-    // Skip external CDNs that timeout and prioritize reliable sources
-    if (activity.featured_image && !activity.featured_image.includes('tripadvisor.com')) {
-      return activity.featured_image;
+    // Only run on client to avoid hydration mismatch
+    if (!isClient) {
+      return 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop';
     }
     
-    // Use local images from public folder - rotate through available images
-    const localImages = [
-      '/lovable-uploads/0ccc1f16-0b14-46d6-b630-b89d5e72bb1d.png',
-      '/lovable-uploads/150b65d8-880f-4502-a2c7-1bac146d90d4.png',
-      '/lovable-uploads/2411e8eb-622b-4671-9c18-c96452b3b52e.png',
-      '/lovable-uploads/3ce02233-799c-4e4f-9ba8-7dc6ccfd6b1f.png',
-      '/lovable-uploads/4223ae41-b263-48cb-a4eb-c54e7d88de5e.png',
-      '/lovable-uploads/53815b7b-96b8-4822-b136-d8e35175cadf.png',
-      '/lovable-uploads/76bcf0aa-341c-44ab-9032-05aad263f26d.png',
-      '/lovable-uploads/7a47ca0f-17ad-4dde-b282-aecad01275de.png',
-      '/lovable-uploads/a0295954-4dd2-494e-ba3b-96cd603b1382.png',
-      '/lovable-uploads/aca4304b-cf00-4bd3-a16f-83243ea2bbb1.png',
-      '/lovable-uploads/ba360617-1620-43d6-b46a-c6e32347b7ef.png',
-      '/lovable-uploads/ca090410-369a-46e2-9f7b-3ef628908ecf.png',
-      '/lovable-uploads/fb0d43bc-97c3-47b9-8a33-1bd1ddb865af.png'
-    ];
-    
-    // Use activity ID to consistently assign the same image to the same activity
-    const imageIndex = activity.id ? parseInt(activity.id.slice(-2), 36) % localImages.length : 0;
-    return localImages[imageIndex];
+    try {
+      // First priority: Check gallery for optimized variants (matching original Lovable logic)
+      if (activity.gallery && Array.isArray(activity.gallery) && activity.gallery.length > 0) {
+        const gallery = activity.gallery[0];
+        if (gallery?.variants && Array.isArray(gallery.variants)) {
+          // Look for 720x480 variant first (optimal size)
+          const variant720 = gallery.variants.find((v: any) => v && v.width === 720 && v.height === 480 && v.url);
+          if (variant720?.url) return variant720.url;
+          
+          // Fallback to 540px width variant
+          const variant540 = gallery.variants.find((v: any) => v && v.width === 540 && v.url);
+          if (variant540?.url) return variant540.url;
+          
+          // Use the last variant as final fallback
+          const lastVariant = gallery.variants[gallery.variants.length - 1];
+          if (lastVariant?.url) return lastVariant.url;
+        }
+      }
+      
+      // Second priority: Use featured_image (including TripAdvisor CDN)
+      if (activity.featured_image && typeof activity.featured_image === 'string') {
+        return activity.featured_image;
+      }
+      
+      // Final fallback: Use Unsplash fallback (matching original)
+      return 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop';
+    } catch (error) {
+      console.error('Error in getActivityImage for activity:', activity.id, error);
+      return 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=600&fit=crop';
+    }
   };
 
   const getHeroImage = (activity: Activity): string => {
