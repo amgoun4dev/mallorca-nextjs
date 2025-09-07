@@ -23,6 +23,22 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'olrieidgokcnhhymksnf.supabase.co' },
       { protocol: 'https', hostname: 'media-cdn.tripadvisor.com' },
       { protocol: 'https', hostname: 'dynamic-media-cdn.tripadvisor.com' },
+     
+      // Activity image domains
+      { protocol: 'https', hostname: 'cdn.getyourguide.com' },
+      { protocol: 'https', hostname: 'img.getyourguide.com' },
+      { protocol: 'https', hostname: 'media.getyourguide.com' },
+      { protocol: 'https', hostname: 'static.getyourguide.com' },
+      { protocol: 'https', hostname: 'cdn.viator.com' },
+      { protocol: 'https', hostname: 'media.viator.com' },
+      { protocol: 'https', hostname: 'images.viator.com' },
+      { protocol: 'https', hostname: 'cdn.tiqets.com' },
+      { protocol: 'https', hostname: 'images.tiqets.com' },
+      { protocol: 'https', hostname: 'media.tiqets.com' },
+      // Additional CDN domains that might be used
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'imagedelivery.net' },
+      { protocol: 'https', hostname: 'cdn.pixabay.com' },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year
