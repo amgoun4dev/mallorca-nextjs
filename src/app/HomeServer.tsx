@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import ClientNewsTicker from "./ticker-client";
@@ -82,8 +82,63 @@ export default function HomeServer() {
         </div>
       </section>
 
+      {/* AI Property Search Section - Server rendered */}
+      <section className="py-20 bg-gradient-subtle relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5"></div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 leading-tight py-2">
+            Entdecken Sie Ihre Traumimmobilie mit der weltweit ersten
+            <span className="block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent py-2">
+              KI-gestützten Immobiliensuche
+            </span>
+          </h2>
+          
+          <p className="text-lg text-muted-foreground max-w-4xl mx-auto mb-8 leading-relaxed">
+            Zugang zu über 70.000 Immobilien mit unserer KI-gestützten Immobiliensuche. Unser System kennt etwa 
+            95% aller derzeit zum Verkauf stehenden Immobilien auf dem Markt, was Ihre Suche effizient und stressfrei macht. 
+            Verabschieden Sie sich von stundenlangem Durchstöbern von Immobilienportalen und lassen Sie unsere KI Ihnen 
+            schnell dabei helfen, Ihre ideale Immobilie zu finden.
+          </p>
+
+          <Button size="lg" asChild className="bg-gradient-primary text-white hover:shadow-glow transition-all duration-300 mb-16">
+            <a href="https://app.hellohere.es/" target="_blank" rel="noopener noreferrer">
+              KI Immobiliensuche - Let´s go
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </a>
+          </Button>
+        </div>
+      </section>
+
       {/* Carousel sections - Server component with client components inside */}
       <CarouselSection />
+
+      {/* Call to Action Section - Server rendered */}
+      <section className="py-20 bg-gradient-primary text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute top-10 right-10 w-32 h-32 bg-white/5 rounded-full animate-float"></div>
+        <div className="absolute bottom-10 left-10 w-24 h-24 bg-accent/20 rounded-full animate-float" style={{
+          animationDelay: '1s'
+        }}></div>
+        
+        <div className="relative container mx-auto px-4 text-center">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
+            Bereit, Mallorca zu entdecken?
+          </h2>
+          <p className="text-xl mb-8 text-white/90 max-w-2xl mx-auto">
+            Schließen Sie sich Tausenden von Reisenden an, die die Magie dieser wunderschönen Insel entdeckt haben. 
+            Beginnen Sie noch heute mit der Planung Ihres perfekten Mallorca-Abenteuers.
+          </p>
+          <div className="flex justify-center">
+            <Button size="lg" asChild className="bg-white text-primary hover:bg-white/90 font-semibold px-8 py-3 text-lg shadow-glow">
+              <Link href="/guide-instagram">
+                Jetzt entdecken
+                <Compass className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
