@@ -9,6 +9,7 @@ import { WebVitals } from "../components/performance/WebVitals";
 
 const nunito = Nunito({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-nunito",
   display: "swap",
   preload: true,
@@ -17,7 +18,7 @@ const nunito = Nunito({
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-poppins",
   display: "swap",
   preload: true,

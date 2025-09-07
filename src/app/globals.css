@@ -111,10 +111,12 @@
 }
 
 @theme {
-  /* Font families */
-  --font-sans: var(--font-nunito);
-  --font-mono: var(--font-poppins);
-  --font-display: var(--font-poppins);
+  /* Font families - matching original Lovable project */
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+  --font-serif: var(--font-poppins), serif;
+  --font-display: var(--font-poppins), serif;
+  --font-nunito: var(--font-nunito), sans-serif;
+  --font-poppins: var(--font-poppins), serif;
   
   /* Map Tailwind v4 tokens to our CSS variables */
   --color-background: hsl(var(--background));
