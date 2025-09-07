@@ -5,18 +5,16 @@ import { supabase } from '../../../integrations/supabase/client'
 // Cached function for fetching stats
 const getCachedStats = unstable_cache(
   async () => {
-    const [guidesRes, activitiesRes, newsRes, hotelsRes] = await Promise.all([
+    const [guidesRes, activitiesRes, newsRes] = await Promise.all([
       supabase.from('guides').select('id', { count: 'exact' }).eq('status', 'published'),
       supabase.from('activities').select('id', { count: 'exact' }).eq('status', 'published'),
-      supabase.from('articles').select('id', { count: 'exact' }).eq('status', 'published'),
-      supabase.from('hotels').select('id', { count: 'exact' }).eq('status', 'published')
+      supabase.from('articles').select('id', { count: 'exact' }).eq('status', 'published')
     ]);
 
     return {
       guides: guidesRes.count || 100,
       activities: activitiesRes.count || 200,
-      news: newsRes.count || 50,
-      hotels: hotelsRes.count || 80
+      news: newsRes.count || 50
     };
   },
   ['site-stats'],
@@ -36,8 +34,7 @@ export async function GET() {
     return NextResponse.json({
       guides: 100,
       activities: 200,
-      news: 50,
-      hotels: 80
+      news: 50
     });
   }
 }

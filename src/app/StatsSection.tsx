@@ -8,18 +8,16 @@ interface StatsType {
   guides: number;
   activities: number;
   news: number;
-  hotels: number;
 }
 
 export function StatsSection() {
-  const [stats, setStats] = useState<StatsType>({ guides: 100, activities: 200, news: 50, hotels: 80 });
+  const [stats, setStats] = useState<StatsType>({ guides: 100, activities: 200, news: 50 });
   const [loading, setLoading] = useState(true);
   
   const statsConfig = [
     { key: 'guides', label: "Guides", iconUrl: "/lovable-uploads/fb0d43bc-97c3-47b9-8a33-1bd1ddb865af.png" },
     { key: 'activities', label: "Aktivitäten", iconUrl: "/lovable-uploads/76bcf0aa-341c-44ab-9032-05aad263f26d.png" },
-    { key: 'news', label: "News", iconUrl: "/lovable-uploads/aca4304b-cf00-4bd3-a16f-83243ea2bbb1.png" },
-    { key: 'hotels', label: "Hotels", iconUrl: "/lovable-uploads/7a47ca0f-17ad-4dde-b282-aecad01275de.png" }
+    { key: 'news', label: "News", iconUrl: "/lovable-uploads/aca4304b-cf00-4bd3-a16f-83243ea2bbb1.png" }
   ];
 
   useEffect(() => {
@@ -34,18 +32,16 @@ export function StatsSection() {
         setStats(stats);
       } else {
         // Fallback to direct Supabase call if API fails
-        const [guidesRes, activitiesRes, newsRes, hotelsRes] = await Promise.all([
+        const [guidesRes, activitiesRes, newsRes] = await Promise.all([
           supabase.from('guides').select('id', { count: 'exact' }).eq('status', 'published'),
           supabase.from('activities').select('id', { count: 'exact' }).eq('status', 'published'),
-          supabase.from('articles').select('id', { count: 'exact' }).eq('status', 'published'),
-          supabase.from('hotels').select('id', { count: 'exact' }).eq('status', 'published')
+          supabase.from('articles').select('id', { count: 'exact' }).eq('status', 'published')
         ]);
 
         setStats({
           guides: guidesRes.count || 100,
           activities: activitiesRes.count || 200,
-          news: newsRes.count || 50,
-          hotels: hotelsRes.count || 80
+          news: newsRes.count || 50
         });
       }
     } catch (error) {
@@ -54,8 +50,7 @@ export function StatsSection() {
       setStats({
         guides: 100,
         activities: 200,
-        news: 50,
-        hotels: 80
+        news: 50
       });
     } finally {
       setLoading(false);
