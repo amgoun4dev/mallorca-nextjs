@@ -39,13 +39,17 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'imagedelivery.net' },
       { protocol: 'https', hostname: 'cdn.pixabay.com' },
-      // Hotel image domains
-      { protocol: 'https', hostname: 'photo.hotellook.com' },
-      { protocol: 'https', hostname: 'images.hotellook.com' },
-      { protocol: 'https', hostname: 'static.hotellook.com' },
-      { protocol: 'https', hostname: 'cdn.hotellook.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      // Hotel image domains - using new Next.js 15.5.2 format
+      { protocol: 'https', hostname: 'photo.hotellook.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'images.hotellook.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'static.hotellook.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'cdn.hotellook.com', pathname: '/**' },
+     
+       { protocol: 'https', hostname: 'images.photo.hotellook.com', pathname: '/**' },
+      
     ],
-    formats: ['image/avif', 'image/webp'],
+     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000, // 1 year
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

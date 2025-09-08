@@ -18,7 +18,7 @@ const Privacy = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="py-20 bg-gradient-subtle">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container  max-w-4xl px-4 text-center">
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Datenschutzerklärung
           </h1>

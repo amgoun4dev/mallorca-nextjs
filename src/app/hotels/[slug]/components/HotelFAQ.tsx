@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HelpCircle } from "lucide-react";
 
 interface HotelFAQProps {
@@ -8,17 +9,33 @@ interface HotelFAQProps {
   faqDistanceToBeach?: string;
 }
 
-export function HotelFAQ({ 
-  faqSurroundings, 
-  faqFamilyFriendly, 
-  faqRemoteWorkFriendly, 
-  faqDistanceToBeach 
+export function HotelFAQ({
+  faqSurroundings,
+  faqFamilyFriendly,
+  faqRemoteWorkFriendly,
+  faqDistanceToBeach
 }: HotelFAQProps) {
   const faqs = [
-    { question: 'Umgebung', answer: faqSurroundings },
-    { question: 'Familienfreundlich', answer: faqFamilyFriendly },
-    { question: 'Remote Work freundlich', answer: faqRemoteWorkFriendly },
-    { question: 'Entfernung zum Strand', answer: faqDistanceToBeach },
+    {
+      id: "surroundings",
+      question: "Was gibt es in der Umgebung?",
+      answer: faqSurroundings
+    },
+    {
+      id: "family",
+      question: "Ist das Hotel familienfreundlich?",
+      answer: faqFamilyFriendly
+    },
+    {
+      id: "remote-work",
+      question: "Ist das Hotel für Remote Work geeignet?",
+      answer: faqRemoteWorkFriendly
+    },
+    {
+      id: "beach",
+      question: "Wie weit ist es zum Strand?",
+      answer: faqDistanceToBeach
+    }
   ].filter(faq => faq.answer);
 
   if (faqs.length === 0) {
@@ -33,13 +50,22 @@ export function HotelFAQ({
           Häufig gestellte Fragen
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {faqs.map((faq, index) => (
-          <div key={index} className="border-b pb-4 last:border-b-0">
-            <h4 className="font-semibold mb-2">{faq.question}</h4>
-            <p className="text-muted-foreground">{faq.answer}</p>
-          </div>
-        ))}
+      <CardContent>
+        <Accordion type="single" collapsible className="w-full">
+          {faqs.map((faq) => (
+            <AccordionItem key={faq.id} value={faq.id}>
+              <AccordionTrigger className="text-left">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent>
+                <div 
+                  className="prose prose-gray max-w-none text-muted-foreground"
+                  dangerouslySetInnerHTML={{ __html: faq.answer || '' }}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </CardContent>
     </Card>
   );

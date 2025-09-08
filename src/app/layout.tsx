@@ -93,6 +93,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://olrieidgokcnhhymksnf.supabase.co" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://api.mapbox.com" />
+        
+        {/* Mapbox CSS */}
+        <link href="https://api.mapbox.com/mapbox-gl-js/v3.14.0/mapbox-gl.css" rel="stylesheet" />
         
         {/* Preload critical hero image */}
         <link rel="preload" href="/lovable-uploads/4223ae41-b263-48cb-a4eb-c54e7d88de5e.png" as="image" type="image/png" />

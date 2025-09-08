@@ -19,7 +19,6 @@ import { HotelFAQ } from "./components/HotelFAQ";
 import { HotelAIContent } from "./components/HotelAIContent";
 import { MoreHotels } from "./components/MoreHotels";
 import { MoreActivities } from "./components/MoreActivities";
-import { PropertyOffers } from "./components/PropertyOffers";
 import { MallorcaGallery } from "./components/MallorcaGallery";
 
 interface Hotel {
@@ -377,9 +376,6 @@ export default function HotelDetailClient({ hotel: initialHotel }: HotelDetailCl
 
         {/* Newsletter Block */}
         <NewsletterBlock language={language} />
-
-        {/* Property Offers */}
-        <PropertyOffers language={language} />
 
         {/* Mallorca Gallery */}
         <MallorcaGallery />
