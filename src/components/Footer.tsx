@@ -8,16 +8,8 @@ const footerSections = [
     links: [
       { name: "Guides", href: "/guide-instagram" },
       { name: "Aktivitäten", href: "/activities" },
-      { name: "Events", href: "/events" },
-      { name: "News", href: "/news" },
-    ],
-  },
-  {
-    title: "Unterkünfte",
-    links: [
-      { name: "Hotels", href: "/hotels" },
-      { name: "Ferienwohnungen", href: "/holiday-rentals" },
-      { name: "Immobilien", href: "/real-estate" },
+      { name: "Veranstaltungen", href: "/events" },
+      { name: "Versteckte Schätze", href: "/guide-instagram?category=hidden-gems" },
     ],
   },
   {
