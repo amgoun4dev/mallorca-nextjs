@@ -304,43 +304,24 @@ export default function HolidayRentalsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-primary text-white">
+      <section className="relative py-16 bg-gradient-primary text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            {labels.title}
+          <h1 className="font-display text-3xl md:text-4xl font-bold mb-4">
+            Find your dream villa, finca or beachfront stay
           </h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            {labels.subtitle}
-          </p>
         </div>
       </section>
 
       {/* Filters and Results */}
-      <section className="py-12">
+      <section className="py-8">
         <div className="container mx-auto px-4">
-          {/* Filter Toggle Button (Mobile) */}
-          <div className="lg:hidden mb-6">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="w-full"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              {labels.filters}
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Filters Sidebar */}
-            <div className={`lg:col-span-1 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-              <div className="bg-card border rounded-lg p-6 space-y-6">
-                <h3 className="font-semibold text-lg">{labels.filters}</h3>
-
-                {/* Price Range */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    {labels.priceRange}: €{priceRange[0]} - €{priceRange[1]}
-                  </label>
+          {/* Horizontal Filter Bar */}
+          <div className="bg-white border rounded-lg p-4 mb-6 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Price Range */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Price per week</label>
+                <div className="space-y-2">
                   <Slider
                     value={priceRange}
                     onValueChange={setPriceRange}
@@ -349,170 +330,152 @@ export default function HolidayRentalsPage() {
                     step={50}
                     className="w-full"
                   />
-                </div>
-
-                {/* Bedrooms */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">{labels.bedrooms}</label>
-                  <Select value={selectedBedrooms} onValueChange={setSelectedBedrooms}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="any">{labels.any}</SelectItem>
-                      <SelectItem value="1">1+</SelectItem>
-                      <SelectItem value="2">2+</SelectItem>
-                      <SelectItem value="3">3+</SelectItem>
-                      <SelectItem value="4">4+</SelectItem>
-                      <SelectItem value="5">5+</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Region */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">{labels.region}</label>
-                  <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{labels.all}</SelectItem>
-                      {getUniqueRegions().map(region => (
-                        <SelectItem key={region} value={region}>
-                          {region}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Property Type */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">{labels.propertyType}</label>
-                  <Select value={selectedPropertyType} onValueChange={setSelectedPropertyType}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">{labels.all}</SelectItem>
-                      {getUniquePropertyTypes().map(type => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>€{priceRange[0]}</span>
+                    <span>€{priceRange[1]}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Results */}
-            <div className="lg:col-span-3">
-              {/* Sort and Results Count */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <div className="text-sm text-muted-foreground">
-                  {filteredRentals.length} {filteredRentals.length === 1 ? 'Ferienwohnung' : 'Ferienwohnungen'} gefunden
-                </div>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue />
+              {/* Bedrooms */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Bedrooms</label>
+                <Select value={selectedBedrooms} onValueChange={setSelectedBedrooms}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="popular">{labels.popular}</SelectItem>
-                    <SelectItem value="price-asc">{labels.priceAsc}</SelectItem>
-                    <SelectItem value="price-desc">{labels.priceDesc}</SelectItem>
-                    <SelectItem value="rating">{labels.rating}</SelectItem>
-                    <SelectItem value="newest">{labels.newest}</SelectItem>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="1">1+</SelectItem>
+                    <SelectItem value="2">2+</SelectItem>
+                    <SelectItem value="3">3+</SelectItem>
+                    <SelectItem value="4">4+</SelectItem>
+                    <SelectItem value="5">5+</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Rentals Grid */}
-              {filteredRentals.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredRentals.map((rental) => (
-                    <Card key={rental.id} className="group overflow-hidden hover:shadow-large transition-all duration-300">
-                      <div className="relative h-48 overflow-hidden">
-                        <img
-                          src={getRentalImage(rental)}
-                          alt={getTitle(rental)}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                        {rental.is_featured && (
-                          <div className="absolute top-3 left-3">
-                            <Badge className="bg-accent text-accent-foreground">
-                              Empfohlen
-                            </Badge>
-                          </div>
-                        )}
-                        <div className="absolute top-3 right-3">
-                          <Badge className="bg-primary text-primary-foreground">
-                            €{rental.price} {labels.perNight}
-                          </Badge>
-                        </div>
-                      </div>
-                      
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between mb-3">
-                          <h3 className="font-display text-xl font-semibold group-hover:text-primary transition-colors line-clamp-2">
-                            {getTitle(rental)}
-                          </h3>
-                          <div className="flex items-center space-x-1 ml-2 flex-shrink-0">
-                            <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                            <span className="text-sm font-medium">{rental.rating.toFixed(1)}</span>
-                            <span className="text-sm text-muted-foreground">({rental.review_count})</span>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center text-muted-foreground mb-3">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          <span className="text-sm">{rental.city || rental.region}</span>
-                        </div>
-                        
-                        <div className="flex items-center space-x-4 mb-4 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Bed className="h-4 w-4 mr-1" />
-                            <span>{rental.bedrooms} {labels.bedroomsLabel}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Bath className="h-4 w-4 mr-1" />
-                            <span>{rental.bathrooms} {labels.bathrooms}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            <span>{rental.max_guests} {labels.guests}</span>
-                          </div>
-                        </div>
-                        
-                        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                          {getDescription(rental)}
-                        </p>
-                        
-                        <div className="flex items-center justify-between">
-                          <Badge variant="secondary" className="capitalize">
-                            {rental.property_type}
-                          </Badge>
-                          <Link 
-                            href={`/holiday-rentals/${rental.slug}`}
-                            className="inline-flex items-center text-primary hover:text-primary-dark font-medium text-sm transition-colors"
-                          >
-                            {labels.viewDetails} →
-                          </Link>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <h3 className="text-xl font-semibold mb-2">{labels.noResults}</h3>
-                  <p className="text-muted-foreground">{labels.noResultsDesc}</p>
-                </div>
-              )}
+              {/* Region */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Region</label>
+                <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder="All regions" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All regions</SelectItem>
+                    {getUniqueRegions().map(region => (
+                      <SelectItem key={region} value={region}>
+                        {region}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Property Type */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Property Type</label>
+                <Select value={selectedPropertyType} onValueChange={setSelectedPropertyType}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder="All types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All types</SelectItem>
+                    {getUniquePropertyTypes().map(type => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Sort By */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Sort by</label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder="Most Popular" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="popular">Most Popular</SelectItem>
+                    <SelectItem value="price-asc">Price (low to high)</SelectItem>
+                    <SelectItem value="price-desc">Price (high to low)</SelectItem>
+                    <SelectItem value="rating">Rating</SelectItem>
+                    <SelectItem value="newest">Newest</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
+
+          {/* Results Count */}
+          <div className="mb-6">
+            <div className="text-sm text-gray-600">
+              {filteredRentals.length} {filteredRentals.length === 1 ? 'property' : 'properties'} found
+            </div>
+          </div>
+
+          {/* Rentals Grid */}
+          {filteredRentals.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredRentals.map((rental) => (
+                <Card key={rental.id} className="group overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={getRentalImage(rental)}
+                      alt={getTitle(rental)}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge className="bg-blue-600 text-white text-xs font-medium px-2 py-1">
+                        {rental.property_type}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-lg mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                      {getTitle(rental)}
+                    </h3>
+                    
+                    <div className="flex items-center text-gray-600 mb-2">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      <span className="text-sm">{rental.city || rental.region}</span>
+                    </div>
+                    
+                    <div className="flex items-center mb-3">
+                      <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
+                      <span className="text-sm font-medium">{rental.rating.toFixed(1)}</span>
+                      <span className="text-sm text-gray-500 ml-1">({rental.review_count} reviews)</span>
+                    </div>
+                    
+                    <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <Users className="h-4 w-4 mr-1" />
+                        <span>{rental.max_guests} Guests</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Bed className="h-4 w-4 mr-1" />
+                        <span>{rental.bedrooms}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Bath className="h-4 w-4 mr-1" />
+                        <span>{rental.bathrooms}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold mb-2">{labels.noResults}</h3>
+              <p className="text-muted-foreground">{labels.noResultsDesc}</p>
+            </div>
+          )}
         </div>
       </section>
     </div>
