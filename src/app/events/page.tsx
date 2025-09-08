@@ -1,4 +1,5 @@
 "use client";
+// Events page with complete Lovable UI migration
 import { useState } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, Clock, Euro, Users, Filter, Search, ArrowRight } from "lucide-react";
