@@ -218,7 +218,7 @@ export default function EventsPage() {
                 placeholder="Search events, venues, or locations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-4 text-lg bg-white/95 backdrop-blur border-0 rounded-full shadow-lg"
+                className="pl-12 pr-4 py-4 text-lg bg-white/95 backdrop-blur border-0 rounded-full shadow-lg text-black placeholder:text-gray-500"
               />
             </div>
           </div>
