@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/favicon.ico?v=2",
-    shortcut: "/favicon.ico?v=2",
-    apple: "/favicon.ico?v=2",
+    icon: "/favicon.ico?v=4",
+    shortcut: "/favicon.ico?v=4",
+    apple: "/favicon.ico?v=4",
   },
   openGraph: {
     type: "website",
@@ -94,10 +94,10 @@ export default function RootLayout({
     <html lang="de">
       <head>
         {/* Favicon */}
-        <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
-        <link rel="shortcut icon" href="/favicon.ico?v=2" />
-        <link rel="apple-touch-icon" href="/favicon.ico?v=2" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+        <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.ico?v=4" />
+        <link rel="apple-touch-icon" href="/favicon.ico?v=4" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=4" />
         
         {/* Critical resource hints for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
