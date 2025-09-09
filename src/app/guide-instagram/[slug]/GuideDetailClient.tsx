@@ -8,6 +8,9 @@ import { Badge } from "../../../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import { supabase } from "../../../integrations/supabase/client";
 import { ImageWithFallback } from "../../../components/ui/image-with-fallback";
+import { SafeGuideContent } from "../../../components/ui/safe-guide-content";
+import { CarRentalWidget } from "../../../components/activity/CarRentalWidget";
+import { FlightBookingWidget } from "../../../components/activity/FlightBookingWidget";
 
 interface Guide {
   id: string;
@@ -113,12 +116,55 @@ const GuideDetailClient = ({ slug }: GuideDetailClientProps) => {
     return images;
   };
 
+  const getShareData = () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    const title = guide?.title_de || guide?.title_en || 'Mallorca Magic Guide';
+    const description = guide?.long_desc_de || guide?.long_desc_en || guide?.short_desc_de || 'Entdecken Sie diesen erstaunlichen Guide, um versteckte Juwelen in Mallorca zu finden.';
+    const image = getGuideImages(guide)[0];
+    
+    return { url, title, description, image };
+  };
+
+  const shareOnFacebook = () => {
+    const { url } = getShareData();
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareOnLinkedIn = () => {
+    const { url, title, description } = getShareData();
+    const shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
+
+  const shareOnPinterest = () => {
+    const { url, title, image } = getShareData();
+    const shareUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(image)}&description=${encodeURIComponent(title)}`;
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+  };
+
   const copyLinkForInstagram = async () => {
     if (typeof window !== 'undefined') {
       await navigator.clipboard.writeText(window.location.href);
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
     }
+  };
+
+  const getReadingTime = (guide: Guide | null) => {
+    return guide?.reading_time || 5;
+  };
+
+  const getExcerpt = (guide: Guide | null) => {
+    return guide?.long_desc_de || guide?.long_desc_en || guide?.short_desc_de || 'Entdecken Sie diesen erstaunlichen Guide, um versteckte Juwelen in Mallorca zu finden.';
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('de-DE', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
   };
 
   if (loading) {
@@ -150,241 +196,332 @@ const GuideDetailClient = ({ slug }: GuideDetailClientProps) => {
       {/* Header */}
       <section className="py-8 bg-background border-b">
         <div className="container mx-auto px-4">
-          <Link href="/guide-instagram">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+          <Button variant="ghost" asChild className="mb-4">
+            <Link href="/guide-instagram">
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Zurück zu den Guides
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-6">
-              <Badge variant="secondary" className="mb-2">
-                {guide.location}
-              </Badge>
-              <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-                {guide.title_de || guide.title_en}
-              </h1>
-              
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-4 w-4" />
-                  <span>{guide.reading_time || 5} Min. Lesezeit</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Eye className="h-4 w-4" />
-                  <span>{(guide.view_count || 0).toLocaleString()} Aufrufe</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{new Date(guide.created_at).toLocaleDateString('de-DE')}</span>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
+            <Link href="/guide-instagram" className="hover:text-primary">Guides</Link>
+            <span>/</span>
+            <Link href={`/guide-instagram?location=${guide.location?.toLowerCase()}`} className="hover:text-primary">
+              {guide.location}
+            </Link>
+            <span>/</span>
+            <span>{guide.title_de || guide.title_en}</span>
           </div>
         </div>
       </section>
 
-      {/* Image Gallery */}
-      {images.length > 0 && (
-        <section className="py-8">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="relative aspect-video rounded-lg overflow-hidden shadow-medium mb-4">
-                <ImageWithFallback
-                  src={images[currentImageIndex]}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            {/* Article Header */}
+            <div className="mb-8">
+              {guide.location && <Badge className="mb-4">{guide.location}</Badge>}
+              <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
+                {guide.title_de || guide.title_en}
+              </h1>
+              <p className="text-xl text-muted-foreground mb-6">
+                {getExcerpt(guide)}
+              </p>
+              
+              {/* Social Share Buttons */}
+              <div className="flex items-center space-x-3 mb-6">
+                <span className="text-sm font-medium text-muted-foreground">Teilen:</span>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={shareOnFacebook}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Facebook className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={shareOnLinkedIn}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Linkedin className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={shareOnPinterest}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Share className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyLinkForInstagram}
+                    className={`h-8 px-3 transition-colors ${linkCopied ? 'bg-green-50 border-green-200' : ''}`}
+                  >
+                    {linkCopied ? (
+                      <>
+                        <CheckCircle className="h-4 w-4 mr-1 text-green-600" />
+                        <span className="text-xs text-green-600">Kopiert!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-1" />
+                        <span className="text-xs">Instagram</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Article Meta */}
+              <div className="flex flex-wrap items-center gap-6 py-4 border-y">
+                <div className="flex items-center space-x-3">
+                  <Avatar>
+                    <AvatarFallback>{guide.author?.split(' ').map((n: string) => n[0]).join('') || 'MM'}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-medium">{guide.author || 'Mallorca Magic'}</div>
+                    <div className="text-sm text-muted-foreground">Guide</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                  <div className="flex items-center space-x-1">
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDate(guide.created_at)}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{getReadingTime(guide)} Min. Lesezeit</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Eye className="h-4 w-4" />
+                    <span>{(guide.view_count || 0).toLocaleString()} Aufrufe</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Featured Image with Gallery */}
+            <div className="mb-8">
+              <div className="relative aspect-video overflow-hidden rounded-lg">
+                <img 
+                  src={images[currentImageIndex]} 
                   alt={guide.title_de || guide.title_en}
-                  fallbackSrc="https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg"
                   className="w-full h-full object-cover"
                 />
+                <div className="absolute inset-0 bg-black/20"></div>
                 
+                {/* Gallery Navigation - only show if more than one image */}
                 {images.length > 1 && (
                   <>
                     <Button
-                      variant="secondary"
+                      variant="ghost"
                       size="sm"
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 text-white hover:bg-white/30"
                       onClick={() => setCurrentImageIndex((prev) => prev === 0 ? images.length - 1 : prev - 1)}
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="secondary"
+                      variant="ghost"
                       size="sm"
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 text-white hover:bg-white/30"
                       onClick={() => setCurrentImageIndex((prev) => prev === images.length - 1 ? 0 : prev + 1)}
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
+                    
+                    {/* Gallery Indicators */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                      {images.map((_, index) => (
+                        <button
+                          key={index}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            index === currentImageIndex ? 'bg-white' : 'bg-white/50'
+                          }`}
+                          onClick={() => setCurrentImageIndex(index)}
+                        />
+                      ))}
+                    </div>
                   </>
                 )}
               </div>
-              
-              {images.length > 1 && (
-                <div className="flex space-x-2 overflow-x-auto pb-2">
-                  {images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${
-                        currentImageIndex === index ? 'border-primary' : 'border-transparent'
-                      }`}
-                    >
-                      <ImageWithFallback
-                        src={image}
-                        alt={`${guide.title_de || guide.title_en} ${index + 1}`}
-                        fallbackSrc="https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg"
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
+            </div>
+
+            {/* Article Content */}
+            <div className="prose prose-lg max-w-none mb-8">
+              <SafeGuideContent guide={guide} />
+            </div>
+
+            {/* Categories */}
+            {guide.category && (
+              <div className="mb-8">
+                <h3 className="font-semibold mb-4">Kategorien</h3>
+                <div className="flex flex-wrap gap-2">
+                  {guide.category.split(',').map((category: string) => (
+                    <Badge key={category.trim()} variant="outline">
+                      <Tag className="mr-1 h-3 w-3" />
+                      {category.trim()}
+                    </Badge>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Author Bio */}
+            <Card className="mb-8">
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  <Avatar className="w-16 h-16">
+                    <AvatarFallback>{guide.author?.split(' ').map((n: string) => n[0]).join('') || 'MM'}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Über {guide.author || 'Mallorca Magic'}</h3>
+                    <p className="text-muted-foreground">Experten-Guide für die Entdeckung des Besten von Mallorca.</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-8 space-y-6">
+              {/* Car Rental Widget */}
+              <CarRentalWidget />
+
+              {/* Flight Booking Widget */}
+              <FlightBookingWidget />
+
+              {/* Share Actions Sidebar */}
+              <Card className="shadow-soft">
+                <CardContent className="p-3">
+                  <h3 className="font-medium mb-2 flex items-center text-xs">
+                    <Share className="mr-1 h-3 w-3" />
+                    Teilen
+                  </h3>
+                  <div className="flex gap-1">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="justify-center p-1 h-8 w-8"
+                      onClick={shareOnFacebook}
+                    >
+                      <Facebook className="h-3 w-3 text-blue-600" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="justify-center p-1 h-8 w-8"
+                      onClick={shareOnLinkedIn}
+                    >
+                      <Linkedin className="h-3 w-3 text-blue-700" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="justify-center p-1 h-8 w-8"
+                      onClick={shareOnPinterest}
+                    >
+                      <Share className="h-3 w-3 text-red-600" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className={`justify-center p-1 h-8 w-8 transition-colors ${linkCopied ? 'bg-green-50 border-green-200' : ''}`}
+                      onClick={copyLinkForInstagram}
+                    >
+                      {linkCopied ? (
+                        <CheckCircle className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Copy className="h-3 w-3 text-pink-600" />
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Info */}
+              <Card className="shadow-soft">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-4">Schnellinfo</h3>
+                  <div className="space-y-3 text-sm">
+                    {guide.location && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ort:</span>
+                        <span className="capitalize">{guide.location}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Lesezeit:</span>
+                      <span>{getReadingTime(guide)} Minuten</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Aufrufe:</span>
+                      <span>{(guide.view_count || 0).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Veröffentlicht:</span>
+                      <span>{formatDate(guide.created_at)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Related Guides */}
+              {relatedGuides.length > 0 && (
+                <Card className="shadow-soft">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-4">Ähnliche Guides</h3>
+                    <div className="space-y-4">
+                      {relatedGuides.map((relatedGuide) => (
+                        <Link 
+                          key={relatedGuide.id}
+                          href={`/guide-instagram/${relatedGuide.slug_de}`}
+                          className="block group"
+                        >
+                          <div className="flex space-x-3">
+                            <img 
+                              src={relatedGuide.thumbnail ? relatedGuide.thumbnail.split(', ')[0] : "https://olrieidgokcnhhymksnf.supabase.co/storage/v1/object/public/general-images/mallorcamagic_fallback.jpg"} 
+                              alt={relatedGuide.title_de || relatedGuide.title_en}
+                              className="w-16 h-16 object-cover rounded group-hover:scale-105 transition-transform"
+                            />
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm group-hover:text-primary transition-colors line-clamp-2">
+                                {relatedGuide.title_de || relatedGuide.title_en}
+                              </h4>
+                              <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
+                                {relatedGuide.location && (
+                                  <Badge variant="outline" className="text-xs py-0">
+                                    {relatedGuide.location}
+                                  </Badge>
+                                )}
+                                <span>{relatedGuide.reading_time || 5} Min</span>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                    
+                    <Button variant="outline" size="sm" asChild className="w-full mt-4">
+                      <Link href="/guide-instagram">
+                        Alle Guides anzeigen
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
-        </section>
-      )}
-
-      {/* Content */}
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Content */}
-              <div className="lg:col-span-2">
-                <Card className="shadow-soft">
-                  <CardContent className="p-8">
-                    {/* Description */}
-                    {(guide.long_desc_de || guide.long_desc_en || guide.short_desc_de) && (
-                      <div className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-muted-foreground prose-a:text-primary prose-strong:text-foreground mb-8">
-                        <div 
-                          className="guide-content 
-                            [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-6 [&_h1]:text-foreground [&_h1]:font-display
-                            [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-foreground [&_h2]:font-display
-                            [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-foreground [&_h3]:font-display
-                            [&_h4]:text-lg [&_h4]:font-semibold [&_h4]:mt-4 [&_h4]:mb-2 [&_h4]:text-foreground [&_h4]:font-display
-                            [&_h5]:text-base [&_h5]:font-semibold [&_h5]:mt-4 [&_h5]:mb-2 [&_h5]:text-foreground [&_h5]:font-display
-                            [&_h6]:text-sm [&_h6]:font-semibold [&_h6]:mt-3 [&_h6]:mb-2 [&_h6]:text-foreground [&_h6]:font-display
-                            [&_p]:mb-4 [&_p]:leading-relaxed [&_p]:text-muted-foreground
-                            [&_strong]:font-semibold [&_strong]:text-foreground
-                            [&_em]:italic
-                            [&_ul]:mb-4 [&_ul]:ml-6 [&_ul]:list-disc
-                            [&_ol]:mb-4 [&_ol]:ml-6 [&_ol]:list-decimal
-                            [&_li]:mb-1
-                            [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:italic
-                            [&_a]:text-primary [&_a]:underline [&_a]:hover:text-primary-dark
-                          "
-                          dangerouslySetInnerHTML={{ 
-                            __html: guide.long_desc_de || guide.long_desc_en || guide.short_desc_de 
-                          }} 
-                        />
-                      </div>
-                    )}
-
-                    {/* Share Section */}
-                    <div className="border-t pt-6">
-                      <h3 className="font-semibold mb-4">Teilen Sie diesen Guide</h3>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank')}
-                        >
-                          <Facebook className="h-4 w-4 mr-2" />
-                          Facebook
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')}
-                        >
-                          <Linkedin className="h-4 w-4 mr-2" />
-                          LinkedIn
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={copyLinkForInstagram}
-                        >
-                          {linkCopied ? (
-                            <>
-                              <CheckCircle className="h-4 w-4 mr-2" />
-                              Kopiert!
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-4 w-4 mr-2" />
-                              Link kopieren
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-8 space-y-6">
-                  {/* Guide Info */}
-                  <Card className="shadow-soft">
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold mb-4">Guide Informationen</h3>
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-2 text-sm">
-                          <MapPin className="h-4 w-4 text-primary" />
-                          <span>{guide.location}</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-sm">
-                          <Clock className="h-4 w-4 text-primary" />
-                          <span>{guide.reading_time || 5} Min. Lesezeit</span>
-                        </div>
-                        <div className="flex items-center space-x-2 text-sm">
-                          <Eye className="h-4 w-4 text-primary" />
-                          <span>{(guide.view_count || 0).toLocaleString()} Aufrufe</span>
-                        </div>
-                        {guide.author && (
-                          <div className="flex items-center space-x-2 text-sm">
-                            <User className="h-4 w-4 text-primary" />
-                            <span>{guide.author}</span>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Related Guides */}
-                  {relatedGuides.length > 0 && (
-                    <Card className="shadow-soft">
-                      <CardContent className="p-6">
-                        <h3 className="font-semibold mb-4">Ähnliche Guides</h3>
-                        <div className="space-y-4">
-                          {relatedGuides.map((relatedGuide) => (
-                            <Link key={relatedGuide.id} href={`/guide-instagram/${relatedGuide.slug_de}`}>
-                              <div className="group cursor-pointer">
-                                <h4 className="font-medium text-sm group-hover:text-primary transition-colors line-clamp-2 mb-1">
-                                  {relatedGuide.title_de || relatedGuide.title_en}
-                                </h4>
-                                <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                                  <MapPin className="h-3 w-3" />
-                                  <span>{relatedGuide.location}</span>
-                                  <Clock className="h-3 w-3" />
-                                  <span>{relatedGuide.reading_time || 5}Min</span>
-                                </div>
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

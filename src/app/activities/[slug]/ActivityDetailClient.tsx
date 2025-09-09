@@ -10,6 +10,8 @@ import { Badge } from "../../../components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
 import { ImageWithFallback } from "../../../components/ui/image-with-fallback";
 import { supabase } from "../../../integrations/supabase/client";
+import { CarRentalWidget } from "../../../components/activity/CarRentalWidget";
+import { FlightBookingWidget } from "../../../components/activity/FlightBookingWidget";
 
 interface Activity {
   id: string;
@@ -517,6 +519,12 @@ export default function ActivityDetailClient({ slug }: ActivityDetailClientProps
 
       {/* Property Offers */}
       <PropertyOffers />
+
+      {/* Car Rental Widget */}
+      <CarRentalWidget />
+      
+      {/* Flight Booking Widget */}
+      <FlightBookingWidget />
     </div>
   );
 }
